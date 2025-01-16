@@ -1,0 +1,193 @@
+.tutor-banner {
+  position: relative;
+  max-width: 1170px; 
+  width: 100%; 
+  height: 550px;
+  border-radius: 40px;
+  overflow: hidden;
+  margin: 0 auto; 
+}
+  .pattern-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  
+  .pattern-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    /* background: linear-gradient(180deg, rgba(26, 37, 103, 1) 0%, rgba(164, 20, 213, 1) 50%); */
+    z-index: 2;
+  }
+  
+  .content-wrapper {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 30px;
+    height: 100%;
+  }
+  
+  .text-content {
+    max-width: 672px;
+    /* background-color: red; */
+  }
+  
+  .title {
+    font-family: 'DM Sans', sans-serif;
+
+    font-weight: 700;
+    line-height: 120%;
+    color: #ffffff;
+    text-transform: capitalize;
+    margin-bottom: 40px;
+    white-space: pre-line;
+  }
+  
+  .features-grid {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 44px;
+  }
+  
+  .features-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .check-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .feature-item span {
+    font-family: 'DM Sans', sans-serif;
+
+    font-weight: 700;
+    line-height: 120%;
+    color: #ffffff;
+    text-transform: uppercase;
+  }
+  
+  .cta-button {
+    background: #ffffff;
+    border-radius: 100px;
+    padding: 14px 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #16192C;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background: #f0f0f0;
+  }
+  
+  .image-wrapper {
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .girls-image {
+    width: 650px;
+    height: 573px;
+    object-fit: cover;
+  }
+  
+  .vector-decoration {
+    position: absolute;
+    top: 37px;
+    right: -110px;
+    width: 110.6px;
+    height: 128.91px;
+  }
+  
+  @media (max-width: 1200px) {
+    /* .content-wrapper {
+      flex-direction: column;
+      padding: 40px;
+    }
+   */
+    .text-content {
+      max-width: 100%;
+    }
+  
+    .title {
+      font-size: 40px;
+      text-align: left;
+    }
+  
+    .features-grid {
+      justify-content: left;
+    }
+  
+    .image-wrapper {
+      display: none;
+    }
+  
+    .cta-button {
+      display: block;
+      /* margin: 0 auto; */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .tutor-banner {
+      height: auto;
+      /* min-height: 550px; */
+    }
+  
+    .features-grid {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .features-column {
+      gap: 12px;
+    }
+  
+    .feature-item span {
+      font-size: 18px;
+    }
+  
+    .title {
+      font-size: 32px;
+    }
+  }
+  
+  
+  .responsive-img {
+    width: auto;
+    height: auto;
+  }
+  
+  /* For mobile screens */
+  @media (max-width: 768px) {
+    .responsive-img {
+      width: 50%; /* Adjust percentage or pixel size as needed */
+      height: auto;
+    }
+  }

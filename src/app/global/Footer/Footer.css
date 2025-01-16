@@ -1,0 +1,36 @@
+
+.main-component {
+  color: #ffffff;
+  background-color: #1e2139;
+  width: 100%;
+
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding-top: 80px;
+  flex-direction: column;
+}
+/* 
+h1,
+h2,
+h3 {
+  color: #ffffff;
+}
+
+p,
+li,
+a {
+  color: #8a99b1;
+} */
+
+.footer {
+  background-color: #1a1a1a;
+}
+
+.footer a {
+  color: #8a99b1;
+}
+
+.footer a:hover {
+  color: #ffffff;
+}

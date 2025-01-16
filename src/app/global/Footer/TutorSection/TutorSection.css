@@ -1,0 +1,62 @@
+.tutor-section {
+    width: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 30px 0;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+  }
+  
+  .tutor-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    text-transform: capitalize;
+  }
+  
+  .tutor-content {
+    display: flex;
+    flex-direction: column; 
+    gap: 30px;
+    width: fit-content;
+  
+    @media (min-width: 640px) {
+      flex-direction: row; 
+      justify-content: space-between; 
+    }
+  }
+  
+  .tutor-column {
+    flex: 1;
+  }
+  
+  .column-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 34px;
+    text-transform: capitalize;
+  }
+  
+  .cities-lists {
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+  }
+  
+  .cities-list,
+  .countries-list,
+  .languages-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #8A99B1;
+    font-size: 14px;
+    line-height: normal;
+  }
+  
+  .cities-list li,
+  .countries-list li,
+  .languages-list li {
+    margin-bottom: 8px;
+  }
+  
