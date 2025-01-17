@@ -2,58 +2,40 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
-import { Checkbox } from "@/components/ui/checkbox"
+import Image from "next/image";
+import { useForm } from "react-hook-form";
 
-const step1Schema = z.object({
-    options: z.record(z.boolean()),
-});
-
-const Step1 = () => {
+const StepThree = ({ onNext }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const [selectedOptions, setSelectedOptions] = useState([]);
 
     const {
-        register,
+        control,
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: zodResolver(step1Schema),
         defaultValues: {
             options: {},
         },
     });
 
-    const onSubmit = async (data) => {
-        console.log(data)
+    const onSubmit = (data) => {
         setLoading(true);
+        onNext(selectedOptions);
 
-        try {
-            console.log("Form Data:", data);
+        setLoading(false);
+    };
 
-            const selectedOptions = Object.keys(data.options).filter(
-                (key) => data.options[key]
+    const handleCheckboxChange = (checked, optionName) => {
+        if (checked) {
+            setSelectedOptions((prev) => [...prev, optionName]);
+        } else {
+            setSelectedOptions((prev) =>
+                prev.filter((option) => option !== optionName)
             );
-
-            console.log("Selected Options:", selectedOptions);
-
-            toast({
-                title: "Selection Successful!",
-                description: `You selected: ${selectedOptions.join(", ")}`,
-            });
-
-            router.push("/step-2");
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: error.message || "An error occurred. Please try again.",
-            });
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -65,19 +47,19 @@ const Step1 = () => {
                     <h3 className="text-center mb-3 capitalize text-p1 md:text-h5 lg:text-h3 font-bold tracking-[0] relative w-fit mx-auto">
                         <img
                             src="/images/icon/left-text.png"
-                            className={`absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]`}
+                            className="absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
+                            alt="icon"
                         />
                         What Type of help do you need?
                     </h3>
-                    <p className="text-p1">
-                        You  can select multiple options
-                    </p>
+                    <p className="text-p1">You can select multiple options</p>
                 </div>
+
                 <div className="container mr-auto px-3 mx-auto">
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <Image
                             src="/images/login/step-1.svg"
-                            alt="Apple"
+                            alt="Help options"
                             width={450}
                             height={350}
                             className="mx-auto"
@@ -102,15 +84,17 @@ const Step1 = () => {
                                     >
                                         {option}
                                     </label>
+
                                     <Checkbox
                                         id={`option-${index}`}
-                                        {...register(`options.${index}`)}
+                                        checked={selectedOptions.includes(option)}
+                                        onCheckedChange={(checked) => {
+                                            handleCheckboxChange(checked, option);
+                                        }}
                                     />
-
                                 </div>
                             ))}
                         </div>
-
                         <div className="mt-4 mb-10 text-center">
                             <a
                                 href="#"
@@ -131,12 +115,10 @@ const Step1 = () => {
                             </Button>
                         </div>
                     </form>
-
                 </div>
-            </div >
-            <div></div>
+            </div>
         </>
     );
 };
 
-export default Step1;
+export default StepThree;

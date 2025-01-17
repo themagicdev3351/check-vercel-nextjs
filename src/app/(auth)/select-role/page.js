@@ -6,6 +6,7 @@ import Image from "next/image";
 import { MdDone } from "react-icons/md";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { storeAuthData } from "@/lib/checkAuth";
 
 const SelectRole = () => {
     const { toast } = useToast();
@@ -25,7 +26,7 @@ const SelectRole = () => {
             return;
         }
 
-        localStorage.setItem("role", selectedType.toLocaleUpperCase())
+        storeAuthData({ role: selectedType.toLocaleUpperCase() })
         router.push("/signin");
         toast({
             title: "Success",

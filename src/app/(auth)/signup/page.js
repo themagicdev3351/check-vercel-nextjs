@@ -15,10 +15,16 @@ import { registerUser } from "@/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
 import SocialLoginButton from "@/app/_components/SocialLoginButton";
+import { checkAuth, storeAuthData } from "@/lib/checkAuth";
 
 const signUpSchema = z.object({
     email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: z.string()
+        .min(8, "Password must be at least 8 characters")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/[0-9]/, "Password must contain at least one number")
+        .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
     terms: z.literal(true, {
         errorMap: () => ({ message: "You must accept the terms and conditions" }),
     }),
@@ -32,17 +38,16 @@ const SignUp = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const savedRole = localStorage.getItem("role");
-        const savedToken = localStorage.getItem("token");
-
-        if (savedToken) {
+        const { isAuthenticated, role } = checkAuth();
+        if (isAuthenticated) {
             router.push("/");
-        } else if (!savedRole) {
+        } else if (!role) {
             router.push("/select-role");
         } else {
             setIsRedirecting(false);
         }
     }, [router]);
+
 
     const [loading, setLoading] = useState(false);
 
@@ -72,7 +77,8 @@ const SignUp = () => {
                     description: result?.payload.message,
                     status: "success",
                 });
-                router.push("/step1");
+                storeAuthData({ token: result?.payload.token })
+                router.push("/onboarding");
             } else {
                 toast({
                     title: "Register Failed",
