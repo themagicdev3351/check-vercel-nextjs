@@ -51,11 +51,7 @@ export const registerUser = createAsyncThunk(
         `/auth/signup?loginMethod=${data.loginMethod}`,
         payload
       );
-      if (response && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Unexpected response format");
-      }
+      return response.data;
     } catch (error) {
       console.error("Register error:", error);
       return rejectWithValue(
@@ -70,7 +66,7 @@ export const generateOtpMobile = createAsyncThunk(
   async (data: any, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `/auth/generateOtp?mobileNumber=${data.number}&countryCode=${data.countryCode}&loginSignUp=SIGNUP`
+        `/auth/generateOtp?mobileNumber=${data.mobile}&countryCode=${data.countryCode}&loginSignUp=${data.loginMethod}`
       );
       if (response && response.data) {
         return response.data;
@@ -84,30 +80,7 @@ export const generateOtpMobile = createAsyncThunk(
       );
     }
   }
-);
-
-export const verifyMobileOtp = createAsyncThunk(
-  "auth/verifyMobileOtp",
-  async (data: any, { rejectWithValue }) => {
-    const payload = generatePayload(data);
-    try {
-      const response = await axiosInstance.post(
-        `/auth/forgotPassword/otp/validate?method=MOBILE`,
-        payload
-      );
-      if (response && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Unexpected response format");
-      }
-    } catch (error) {
-      console.error("Register error:", error);
-      return rejectWithValue(
-        error.response?.data?.message || "Registration failed"
-      );
-    }
-  }
-);
+); 
 
 const isClient = typeof window !== "undefined";
 const authSlice = createSlice({
@@ -145,7 +118,6 @@ const authSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-      // Register user
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";
       })

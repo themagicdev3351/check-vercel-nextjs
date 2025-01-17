@@ -12,8 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { useTheme } from "next-themes";
+import Image from "next/image"; 
 import {
   Sheet,
   SheetClose,
@@ -28,9 +27,9 @@ import { useEffect, useState } from "react";
 import { logout } from "@/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import { checkAuth, logoutUser } from "@/lib/checkAuth";
 
 export default function Navbar() {
-  const { setTheme } = useTheme()
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -48,8 +47,8 @@ export default function Navbar() {
   ]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    const { isAuthenticated } = checkAuth();
+    if (isAuthenticated) {
       setNavItems((prevItems) =>
         prevItems.map((item) =>
           item.name === "Sign In"
@@ -62,7 +61,7 @@ export default function Navbar() {
 
 
   const handleLogout = () => {
-    dispatch(logout());
+    logoutUser()
     router.push("/signin");
   };
 

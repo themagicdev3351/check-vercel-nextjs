@@ -8,12 +8,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import Image from "next/image";
-import { useToast } from "@/hooks/use-toast"; 
+import { useToast } from "@/hooks/use-toast";
+import { FiAtSign } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { generateOtpMobile, loginUser, registerUser, verifyMobileOtp } from "@/features/auth/authSlice";
+import { generateOtpMobile, registerUser, verifyMobileOtp } from "@/features/auth/authSlice";
 import SocialLoginButton from "@/app/_components/SocialLoginButton";
 import { checkAuth, storeAuthData } from "@/lib/checkAuth";
 
@@ -35,8 +36,9 @@ const SignInPhone = () => {
     const [otpSent, setOtpSent] = useState(false);
     const router = useRouter();
     const { isAuthenticated, role } = checkAuth();
-
+    
     useEffect(() => {
+        
         if (isAuthenticated) {
             router.push("/");
         } else if (!role) {
@@ -72,7 +74,7 @@ const SignInPhone = () => {
             const payload = {
                 mobile: phoneNumber,
                 countryCode: countryCode,
-                loginMethod: "LOGIN",
+                loginMethod: "SIGNUP",
             };
 
             const otpResponse = await dispatch(generateOtpMobile(payload));
@@ -105,35 +107,34 @@ const SignInPhone = () => {
         setLoading(true);
         try {
             const { number, otp } = data;
+
             const countryCode = number.split(" ")[0].replace("+", "").trim();
             const phoneNumber = number.replace(/^\+(\d+)\s*/, "").replace(/\s+/g, "");
 
-            const payloadVerifyOtp = {
+            const payloadSignup = {
                 mobile: phoneNumber,
                 countryCode: countryCode,
-                otp: otp,
+                role: localStorage.getItem("role") || "USER",
                 loginMethod: "MOBILE_OTP",
                 role: role,
             };
 
-            const verifyResponse = await dispatch(loginUser(payloadVerifyOtp));
-            console.log(verifyResponse)
+            const signupResult = await dispatch(registerUser(payloadSignup));
             if (verifyResponse?.payload?.success) {
                 storeAuthData({ token: verifyResponse?.payload.token })
                 toast({
-                    title: "Login Successfull!",
+                    title: "SignUp Successfull!",
                     description: verifyResponse?.payload?.message,
                     status: "success",
                 });
                 router.push("/");
             } else {
                 toast({
-                    title: "Login Failed",
+                    title: "SignUp Failed",
                     description: verifyResponse?.payload,
                     status: "error",
                 });
             }
-
         } catch (error) {
             toast({
                 title: "An error occurred",
