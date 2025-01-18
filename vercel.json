@@ -11,5 +11,11 @@
     "github": {
         "enabled": true,
         "silent": true
-    }
+    },
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "http://ec2-3-108-218-11.ap-south-1.compute.amazonaws.com:8080/api/:path*"
+        }
+    ]
 }
