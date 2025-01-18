@@ -1,20 +1,23 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-    swcMinify: true,
+    reactStrictMode: true, // Helps with identifying issues during development
+    swcMinify: true, // Use SWC for faster builds and minification
+    images: {
+        domains: ["example.com"], // Add your image domains here
+    },
     env: {
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL, // Use environment variables
     },
     experimental: {
-        appDir: true,
+        appDir: true, // Enable the app directory if using Next.js 13+
     },
     webpack: (config) => {
+        // Customize Webpack if needed
         config.resolve.fallback = {
             ...config.resolve.fallback,
-            fs: false,
+            fs: false, // Example: Fix "fs" module issue
         };
         return config;
     },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
