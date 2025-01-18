@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-const StepTwo = ({ onNext }) => {
+const StepFour = ({ onNext }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -51,16 +51,16 @@ const StepTwo = ({ onNext }) => {
                             src="/images/icon/left-text.png"
                             className={`absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]`}
                         />
-                        When can you take lessons?
+                        What time of day??
                     </h3>
                     <p className="text-p1">
-                        You  can select multiple options
+                        Time of day is shown in your time zone.you can select multiple option.
                     </p>
                 </div>
                 <div className="container mr-auto px-3 mx-auto">
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <Image
-                            src="/images/login/step-2.svg"
+                            src="/images/login/step-4.svg"
                             alt="Apple"
                             width={450}
                             height={350}
@@ -68,13 +68,13 @@ const StepTwo = ({ onNext }) => {
                         />
                         <div className="flex flex-wrap justify-center gap-3">
                             {[
-                                "Sunday",
-                                "Monday",
-                                "Tuesday",
-                                "Wednesday",
-                                "Thursday",
-                                "Friday",
-                                "Saturday",
+                                "Google/Search Enginge",
+                                "News, Articale",
+                                "YouTube",
+                                "Friends, Colleagues, family members",
+                                "Social media",
+                                "Ads on website or app",
+                                "Ai Platform(ChatGPT, Bard, etc...)",
                             ]
                                 .map((option, index) => (
                                     <label
@@ -123,4 +123,4 @@ const StepTwo = ({ onNext }) => {
     );
 };
 
-export default StepTwo;
+export default StepFour;

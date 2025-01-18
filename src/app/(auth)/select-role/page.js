@@ -6,18 +6,18 @@ import Image from "next/image";
 import { MdDone } from "react-icons/md";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { storeAuthData } from "@/lib/checkAuth";
+import { useAuth } from "@/lib/authContext";
 
 const SelectRole = () => {
     const { toast } = useToast();
     const router = useRouter();
-    const [selectedType, setSelectedType] = useState("");
+    const { authState, setRole } = useAuth();
+    const [selectedType, setSelectedType] = useState(authState.role || "");
 
     function onSubmit(e) {
         e.preventDefault();
 
         if (!selectedType) {
-            alert("Please select a role.");
             toast({
                 title: "Error",
                 description: "Please select a role.",
@@ -26,12 +26,12 @@ const SelectRole = () => {
             return;
         }
 
-        storeAuthData({ role: selectedType.toLocaleUpperCase() })
+        setRole(selectedType.toLocaleUpperCase())
         router.push("/signin");
-        toast({
-            title: "Success",
-            description: `You selected: ${selectedType}`,
-        });
+        // toast({
+        //     title: "Success",
+        //     description: `You selected: ${selectedType}`,
+        // });
     }
 
     return (
@@ -55,11 +55,11 @@ const SelectRole = () => {
                         <div className="space-y-4 w-full mb-10 lg:mb-20">
                             <div className="flex flex-col lg:flex-row gap-5 justify-center">
                                 <div
-                                    className={`relative w-1/1 lg:w-1/2 border-2 rounded-lg p-5 pt-7 text-center cursor-pointer hover:shadow-md ${selectedType === "student"
+                                    className={`relative w-1/1 lg:w-1/2 border-2 rounded-lg p-5 pt-7 text-center cursor-pointer hover:shadow-md ${selectedType === "STUDENT"
                                         ? "border-[rgba(164,20,213,1)]"
                                         : ""
                                         }`}
-                                    onClick={() => setSelectedType("student")}
+                                    onClick={() => setSelectedType("STUDENT")}
                                 >
                                     <div className="text-center">
                                         <Image
@@ -76,7 +76,7 @@ const SelectRole = () => {
                                             Take lessons, chat with your tutor, or review recorded sessions anytime.
                                         </p>
                                     </div>
-                                    {selectedType === "student" && (
+                                    {selectedType === "STUDENT" && (
                                         <div className="absolute bottom-[-18px] left-1/2 transform -translate-x-1/2 text-sm font-semibold text-[rgba(164,20,213,1)]">
                                             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[rgba(164,20,213,1)] p-1">
                                                 <MdDone size={25} className="text-white" />
@@ -86,11 +86,11 @@ const SelectRole = () => {
                                 </div>
 
                                 <div
-                                    className={`relative w-1/1 lg:w-1/2 border-2 rounded-lg p-7 text-center cursor-pointer hover:shadow-md ${selectedType === "tutor"
+                                    className={`relative w-1/1 lg:w-1/2 border-2 rounded-lg p-7 text-center cursor-pointer hover:shadow-md ${selectedType === "TUTOR"
                                         ? "border-[rgba(164,20,213,1)]"
                                         : ""
                                         }`}
-                                    onClick={() => setSelectedType("tutor")}
+                                    onClick={() => setSelectedType("TUTOR")}
                                 >
                                     <div className="text-center">
                                         <Image
@@ -107,7 +107,7 @@ const SelectRole = () => {
                                             Deliver lessons and manage appointments seamlessly with your clients.
                                         </p>
                                     </div>
-                                    {selectedType === "tutor" && (
+                                    {selectedType === "TUTOR" && (
                                         <div className="absolute bottom-[-18px] left-1/2 transform -translate-x-1/2 text-sm font-semibold text-[rgba(164,20,213,1)]">
                                             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[rgba(164,20,213,1)] p-1">
                                                 <MdDone size={25} className="text-white" />
@@ -121,7 +121,7 @@ const SelectRole = () => {
 
                         <div className="max-w-[600px] w-full text-primary-foreground mx-auto text-center">
                             <Button type="submit" variant="black" className="w-full">
-                                Submit
+                                Continue
                             </Button>
                         </div>
                     </form>

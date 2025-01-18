@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image"; 
+import Image from "next/image";
 import {
   Sheet,
   SheetClose,
@@ -24,14 +24,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
-import { logout } from "@/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { checkAuth, logoutUser } from "@/lib/checkAuth";
+import { useAuth } from "@/lib/authContext";
 
 export default function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { authState, logout } = useAuth();
 
   const [navItems, setNavItems] = useState([
     { name: "Find Tutor", href: "/select-role" },
@@ -47,21 +47,19 @@ export default function Navbar() {
   ]);
 
   useEffect(() => {
-    const { isAuthenticated } = checkAuth();
-    if (isAuthenticated) {
+    if (authState.isAuthenticated) {
       setNavItems((prevItems) =>
         prevItems.map((item) =>
           item.name === "Sign In"
-            ? { ...item, name: "Log Out", href: "/signin" }
+            ? { ...item, name: "Log Out", href: "/logout" }
             : item
         )
       );
     }
-  }, []);
-
+  }, [authState, router]);
 
   const handleLogout = () => {
-    logoutUser()
+    logout()
     router.push("/signin");
   };
 

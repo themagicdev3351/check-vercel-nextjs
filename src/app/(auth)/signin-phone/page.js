@@ -8,14 +8,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import Image from "next/image";
-import { useToast } from "@/hooks/use-toast"; 
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { generateOtpMobile, loginUser, registerUser, verifyMobileOtp } from "@/features/auth/authSlice";
 import SocialLoginButton from "@/app/_components/SocialLoginButton";
-import { checkAuth, storeAuthData } from "@/lib/checkAuth";
+import { useAuth } from "@/lib/authContext";
 
 const mobileSchema = z.object({
     number: z.string().min(5, "Invalid phone number").max(15, "Phone number is too long"),
@@ -34,17 +34,26 @@ const SignInPhone = () => {
     const [isRedirecting, setIsRedirecting] = useState(true);
     const [otpSent, setOtpSent] = useState(false);
     const router = useRouter();
-    const { isAuthenticated, role } = checkAuth();
+    const { authState, setToken } = useAuth();
 
     useEffect(() => {
-        if (isAuthenticated) {
-            router.push("/");
-        } else if (!role) {
+        if (!authState) {
+            return;
+        }
+
+        if (!authState.token) {
+            setIsRedirecting(false);
+            return;
+        }
+
+        if (!authState.role) {
             router.push("/select-role");
+        } else if (authState.isAuthenticated) {
+            router.push("/");
         } else {
             setIsRedirecting(false);
         }
-    }, [router]);
+    }, [authState, router]);
 
 
     const [loading, setLoading] = useState(false);
@@ -119,7 +128,7 @@ const SignInPhone = () => {
             const verifyResponse = await dispatch(loginUser(payloadVerifyOtp));
             console.log(verifyResponse)
             if (verifyResponse?.payload?.success) {
-                storeAuthData({ token: verifyResponse?.payload.token })
+                setToken(verifyResponse?.payload.token)
                 toast({
                     title: "Login Successfull!",
                     description: verifyResponse?.payload?.message,

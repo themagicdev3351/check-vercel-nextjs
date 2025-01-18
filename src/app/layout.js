@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Manrope, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import store from "@/store";
+import { AuthProvider } from "@/lib/authContext";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -23,17 +24,19 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.className} ${dmSans.className}`}>
-        <Provider store={store}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </Provider>
-        <Toaster />
+        <AuthProvider>
+          <Provider store={store}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </Provider>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "@/features/auth/authSlice";
 import { Checkbox } from "@/components/ui/checkbox";
 import SocialLoginButton from "@/app/_components/SocialLoginButton";
-import { checkAuth, storeAuthData } from "@/lib/checkAuth";
+import { useAuth } from "@/lib/authContext";
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -31,19 +31,17 @@ const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isRedirecting, setIsRedirecting] = useState(true);
     const router = useRouter();
+    const { authState, setToken } = useAuth();
 
     useEffect(() => {
-        const { isAuthenticated, role } = checkAuth();
-        if (isAuthenticated) {
-            router.push("/");
-        } else if (!role) {
+        if (!authState.role) {
             router.push("/select-role");
+        } else if (authState.isAuthenticated) {
+            router.push("/");
         } else {
             setIsRedirecting(false);
         }
-    }, [router]);
-
-
+    }, []);
 
     const [loading, setLoading] = useState(false);
 
@@ -74,7 +72,7 @@ const SignIn = () => {
                     description: result?.payload.message,
                     status: "success",
                 });
-                storeAuthData({ token: result?.payload.token })
+                setToken(result?.payload.token)
                 router.push("/");
             } else {
                 toast({

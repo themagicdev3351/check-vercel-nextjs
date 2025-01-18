@@ -15,7 +15,7 @@ import { registerUser } from "@/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
 import SocialLoginButton from "@/app/_components/SocialLoginButton";
-import { checkAuth, storeAuthData } from "@/lib/checkAuth";
+import { useAuth } from "@/lib/authContext";
 
 const signUpSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -36,18 +36,26 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isRedirecting, setIsRedirecting] = useState(true);
     const router = useRouter();
+    const { authState, setToken } = useAuth();
 
     useEffect(() => {
-        const { isAuthenticated, role } = checkAuth();
-        if (isAuthenticated) {
-            router.push("/");
-        } else if (!role) {
+        if (!authState) {
+            return;
+        }
+
+        if (!authState.token) {
+            setIsRedirecting(false);
+            return;
+        }
+
+        if (!authState.role) {
             router.push("/select-role");
+        } else if (authState.isAuthenticated) {
+            router.push("/");
         } else {
             setIsRedirecting(false);
         }
-    }, [router]);
-
+    }, [authState, router]);
 
     const [loading, setLoading] = useState(false);
 
@@ -77,7 +85,7 @@ const SignUp = () => {
                     description: result?.payload.message,
                     status: "success",
                 });
-                storeAuthData({ token: result?.payload.token })
+                setToken(result?.payload.token)
                 router.push("/onboarding");
             } else {
                 toast({

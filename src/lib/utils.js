@@ -9,7 +9,7 @@ export function cn(...inputs) {
 
 // Axios instance configuration
 export const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://ec2-3-108-218-11.ap-south-1.compute.amazonaws.com:8080/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://app.xpertbuddy.in/api",
   headers: {
     "Content-Type": "application/json",
   },
