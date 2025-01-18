@@ -43,6 +43,7 @@
     "react-phone-number-input": "^3.4.11",
     "react-redux": "^9.2.0",
     "react-responsive": "^10.0.0",
+    "sharp": "^0.33.5",
     "styled-components": "^6.1.14",
     "swiper": "^11.2.1",
     "tailwind-merge": "^2.6.0",
@@ -50,6 +51,9 @@
     "vaul": "^1.1.2",
     "vercel": "^39.2.6",
     "zod": "^3.24.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
