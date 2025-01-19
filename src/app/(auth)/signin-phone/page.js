@@ -37,18 +37,11 @@ const SignInPhone = () => {
     const { authState, setToken } = useAuth();
 
     useEffect(() => {
-        if (!authState) {
-            return;
-        }
+        if (!authState) return
 
-        if (!authState.token) {
-            setIsRedirecting(false);
-            return;
-        }
-
-        if (!authState.role) {
+        if (!authState?.role) {
             router.push("/select-role");
-        } else if (authState.isAuthenticated) {
+        } else if (authState?.isAuthenticated) {
             router.push("/");
         } else {
             setIsRedirecting(false);

@@ -1,90 +1,108 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import StepOne from "@/components/onBoarding/StepOne";
 import StepTwo from "@/components/onBoarding/StepTwo";
 import StepThree from "@/components/onBoarding/StepThree";
 import StepFour from "@/components/onBoarding/StepFour";
 import { useAuth } from "@/lib/authContext";
+import { useToast } from "@/hooks/use-toast";
+import { useDispatch } from "react-redux";
+import { updateProfile } from "@/features/user/userSlice";
 
 const Onboarding = () => {
-    const [formData, setFormData] = useState({
-        step1: [],
-        step2: [],
-        step3: [],
-    });
-    const [step, setStep] = useState(1);
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { authState } = useAuth();
+    const { toast } = useToast();
+    const dispatch = useDispatch();
+    const [isRedirecting, setIsRedirecting] = useState(true);
+
+    const [formData, setFormData] = useState({
+        step1: null,
+        step2: null,
+        step3: null,
+        step4: null,
+    });
+    const step = parseInt(searchParams.get("step") || "1", 10);
 
     useEffect(() => {
-        if (!authState) {
-            return;
-        }
+        if (!authState) return
 
-        if (!authState.token) {
-            setIsRedirecting(false);
-            return;
-        }
-
-        if (!authState.role) {
+        if (!authState?.role) {
             router.push("/select-role");
-        } else if (authState.isAuthenticated) {
-            router.push("/");
         } else {
             setIsRedirecting(false);
         }
     }, [authState, router]);
 
     const handleNextStep = (data) => {
-        console.log(data)
         setFormData((prevData) => ({
             ...prevData,
             [`step${step}`]: data,
         }));
 
         if (step < 4) {
-            setStep(step + 1);
+            router.push(`/onboarding?step=${step + 1}`);
         } else {
-            submitData(formData);
+            submitData({ ...formData, [`step${step}`]: data });
         }
     };
 
     const submitData = async (data) => {
         try {
-            const combinedData = {
-                ...data.step1,
-                ...data.step2,
-                ...data.step3,
+            const payload = {
+                helpNeeded: data.step1,
+                availableDays: data.step2,
+                availableTimeSlots: data.step3,
+                hearAboutUs: data.step4,
+                userId: authState?.userId,
+                role: authState?.role,
             };
-
-            const response = await fetch("https://app.xpertbuddy.in/api/profile/onboard/student", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(combinedData),
+            const result = await dispatch(updateProfile(payload));
+            toast({
+                title: "Profile Updated",
+                description: result?.payload.message || "An unknown error occurred.",
+                status: "error",
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to submit data");
-            }
-
-            router.push("/success");
+            router.push("/");
         } catch (error) {
-            console.error("Error submitting data:", error);
+            toast({
+                title: "An error occurred",
+                description: error.message || "Please try again later.",
+                status: "error",
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
-    return (
-        <div>
-            {step === 1 && <StepOne onNext={handleNextStep} />}
-            {step === 2 && <StepTwo onNext={handleNextStep} />}
-            {step === 3 && <StepThree onNext={handleNextStep} />}
-            {step === 4 && <StepFour onNext={handleNextStep} />}
-        </div>
-    );
+    const renderStep = () => {
+        switch (step) {
+            case 1:
+                return <StepOne onNext={handleNextStep} formData={formData} />;
+            case 2:
+                return <StepTwo onNext={handleNextStep} formData={formData} />;
+            case 3:
+                return <StepThree onNext={handleNextStep} formData={formData} />;
+            case 4:
+                return <StepFour onNext={handleNextStep} formData={formData} />;
+            default:
+                router.push("/onboarding?step=1");
+                return null;
+        }
+    };
+
+    if (isRedirecting) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    return <div>{renderStep()}</div>;
 };
 
 export default Onboarding;

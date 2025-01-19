@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
@@ -7,12 +8,8 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [authState, setAuthState] = useState({
-        isAuthenticated: false,
-        token: null,
-        userId: null,
-        role: null,
-    });
+    const router = useRouter();
+    const [authState, setAuthState] = useState(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -24,13 +21,23 @@ export const AuthProvider = ({ children }) => {
 
             setAuthState((prevState) => ({
                 ...prevState,
-                isAuthenticated,
-                token,
-                userId,
-                role,
+                isAuthenticated: isAuthenticated,
+                token: token,
+                userId: userId,
+                role: role,
             }));
         }
     }, []);
+
+    // useEffect(() => {
+    //     if (authState.isAuthenticated) {
+    //         if (!authState.role) {
+    //             router.push("/select-role");
+    //         } else if (authState.isAuthenticated) {
+    //             router.push("/");
+    //         }
+    //     }
+    // }, [authState, router]);
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -49,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("role", role);
         setAuthState((prevState) => ({
             ...prevState,
-            role,
+            role: role,
         }));
     };
 
@@ -58,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         setAuthState((prevState) => ({
             ...prevState,
             isAuthenticated: true,
-            token,
+            token: token,
         }));
     };
 
@@ -67,7 +74,7 @@ export const AuthProvider = ({ children }) => {
         setAuthState((prevState) => ({
             ...prevState,
             isAuthenticated: true,
-            userId,
+            userId: userId,
         }));
     };
 

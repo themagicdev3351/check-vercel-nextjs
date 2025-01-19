@@ -47,7 +47,8 @@ export default function Navbar() {
   ]);
 
   useEffect(() => {
-    if (authState.isAuthenticated) {
+    if (!authState) return
+    if (authState?.isAuthenticated) {
       setNavItems((prevItems) =>
         prevItems.map((item) =>
           item.name === "Sign In"

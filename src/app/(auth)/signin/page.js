@@ -34,14 +34,16 @@ const SignIn = () => {
     const { authState, setToken } = useAuth();
 
     useEffect(() => {
-        if (!authState.role) {
+        if (!authState) return
+
+        if (!authState?.role) {
             router.push("/select-role");
-        } else if (authState.isAuthenticated) {
+        } else if (authState?.isAuthenticated) {
             router.push("/");
         } else {
             setIsRedirecting(false);
         }
-    }, []);
+    }, [authState, router]);
 
     const [loading, setLoading] = useState(false);
 

@@ -9,11 +9,10 @@ import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-const StepFour = ({ onNext }) => {
+const StepFour = ({ onNext, formData }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const [selectedOptions, setSelectedOptions] = useState([]);
-
+    const [selectedOptions, setSelectedOptions] = useState(formData.step4 || []);
     const {
         control,
         handleSubmit,

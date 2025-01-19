@@ -12,7 +12,7 @@ const SelectRole = () => {
     const { toast } = useToast();
     const router = useRouter();
     const { authState, setRole } = useAuth();
-    const [selectedType, setSelectedType] = useState(authState.role || "");
+    const [selectedType, setSelectedType] = useState(authState?.role || "");
 
     function onSubmit(e) {
         e.preventDefault();

@@ -36,21 +36,14 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isRedirecting, setIsRedirecting] = useState(true);
     const router = useRouter();
-    const { authState, setToken } = useAuth();
+    const { authState, setToken, setUserId } = useAuth();
 
     useEffect(() => {
-        if (!authState) {
-            return;
-        }
+        if (!authState) return
 
-        if (!authState.token) {
-            setIsRedirecting(false);
-            return;
-        }
-
-        if (!authState.role) {
+        if (!authState?.role) {
             router.push("/select-role");
-        } else if (authState.isAuthenticated) {
+        } else if (authState?.isAuthenticated) {
             router.push("/");
         } else {
             setIsRedirecting(false);
@@ -86,7 +79,8 @@ const SignUp = () => {
                     status: "success",
                 });
                 setToken(result?.payload.token)
-                router.push("/onboarding");
+                setUserId(result?.payload.userId)
+                router.push("/onboarding?step=1");
             } else {
                 toast({
                     title: "Register Failed",
