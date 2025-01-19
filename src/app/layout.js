@@ -7,6 +7,7 @@ import { Manrope, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import store from "@/store";
 import { AuthProvider } from "@/lib/authContext";
+import { Suspense } from "react";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -24,18 +25,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.className} ${dmSans.className}`}>
-        <AuthProvider>
-          <Provider store={store}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
-          </Provider>
-          <Toaster />
+        <AuthProvider>+
+          <Suspense>
+            <Provider store={store}>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </Provider>
+            <Toaster />
+          </Suspense>
         </AuthProvider>
       </body>
     </html>

@@ -22,8 +22,8 @@ const Onboarding = () => {
     const { toast } = useToast();
     const dispatch = useDispatch();
     const [isRedirecting, setIsRedirecting] = useState(true);
-    const step = searchParams && searchParams.get("step") || "1"; 
-    
+    const step = searchParams && searchParams.get("step") || "1";
+
     const [formData, setFormData] = useState({
         step1: null,
         step2: null,
