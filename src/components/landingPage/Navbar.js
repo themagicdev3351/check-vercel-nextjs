@@ -60,8 +60,7 @@ export default function Navbar() {
   }, [authState, router]);
 
   const handleLogout = () => {
-    logout()
-    router.push("/signin");
+    logout() 
   };
 
   return (

@@ -1,5 +1,7 @@
+import { clearUser, fetchUserProfile } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 const AuthContext = createContext();
 
@@ -10,6 +12,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const router = useRouter();
     const [authState, setAuthState] = useState(null);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -18,7 +21,9 @@ export const AuthProvider = ({ children }) => {
             const role = localStorage.getItem("role");
 
             const isAuthenticated = token && token.trim() !== "" && token !== null;
-
+            if (userId && token) {
+                dispatch(fetchUserProfile(userId));
+            }
             setAuthState((prevState) => ({
                 ...prevState,
                 isAuthenticated: isAuthenticated,
@@ -41,15 +46,16 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("userId");
+        // localStorage.removeItem("userId");
         localStorage.removeItem("role");
-
+        dispatch(clearUser());
         setAuthState({
             isAuthenticated: false,
             token: null,
-            userId: null,
+            // userId: null,
             role: null,
         });
+        router.push("/signin");
     };
 
     const setRole = (role) => {

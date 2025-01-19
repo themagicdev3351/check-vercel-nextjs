@@ -49,16 +49,56 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+export const fetchUserProfile = createAsyncThunk(
+  "user/fetchUserProfile",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `/profile/get/student?userId=${userId}`,
+        {
+          headers: {
+            accept: "*/*",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user profile"
+      );
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
+    user: null,
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearUser: (state) => {
+      state.user = null;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
-    builder;
+    builder
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   },
 });
-
+export const { clearUser } = userSlice.actions;
 export default userSlice.reducer;

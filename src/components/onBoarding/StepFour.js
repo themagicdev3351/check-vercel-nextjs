@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 const StepFour = ({ onNext, formData }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const [selectedOptions, setSelectedOptions] = useState(formData.step4 || []);
+    const [selectedOptions, setSelectedOptions] = useState(formData || []);
     const {
         control,
         handleSubmit,

@@ -25,9 +25,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.className} ${dmSans.className}`}>
-        <AuthProvider>+
-          <Suspense>
-            <Provider store={store}>
+        <Suspense>
+          <Provider store={store}>
+            <AuthProvider>
               <ThemeProvider
                 attribute="class"
                 defaultTheme="light"
@@ -36,10 +36,10 @@ export default function RootLayout({ children }) {
               >
                 {children}
               </ThemeProvider>
-            </Provider>
-            <Toaster />
-          </Suspense>
-        </AuthProvider>
+            </AuthProvider>
+          </Provider>
+          <Toaster />
+        </Suspense>
       </body>
     </html>
   );

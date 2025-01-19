@@ -74,13 +74,13 @@ const SignUp = () => {
             const result = await dispatch(registerUser(payload));
             if (result?.payload.success) {
                 toast({
-                    title: "Register Successful!",
+                    title: result?.payload.message,
                     description: result?.payload.message,
                     status: "success",
                 });
                 setToken(result?.payload.token)
                 setUserId(result?.payload.userId)
-                router.push("/onboarding?step=1");
+                router.push("/onboarding?step=availableDays");
             } else {
                 toast({
                     title: "Register Failed",

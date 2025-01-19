@@ -3,17 +3,15 @@
 import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-
-const StepOne = dynamic(() => import('@/components/onBoarding/StepOne'), { ssr: false });
-const StepTwo = dynamic(() => import('@/components/onBoarding/StepTwo'), { ssr: false });
-const StepThree = dynamic(() => import('@/components/onBoarding/StepThree'), { ssr: false });
-const StepFour = dynamic(() => import('@/components/onBoarding/StepFour'), { ssr: false });
 
 import { useAuth } from "@/lib/authContext";
 import { useToast } from "@/hooks/use-toast";
 import { useDispatch } from "react-redux";
 import { updateProfile } from "@/features/user/userSlice";
+import StepOne from "@/components/onBoarding/StepOne";
+import StepTwo from "@/components/onBoarding/StepTwo";
+import StepThree from "@/components/onBoarding/StepThree";
+import StepFour from "@/components/onBoarding/StepFour";
 
 const Onboarding = () => {
     const router = useRouter();
@@ -22,56 +20,83 @@ const Onboarding = () => {
     const { toast } = useToast();
     const dispatch = useDispatch();
     const [isRedirecting, setIsRedirecting] = useState(true);
-    const step = searchParams && searchParams.get("step") || "1";
+    const step = searchParams && searchParams.get("step") || "helpNeeded";
 
     const [formData, setFormData] = useState({
-        step1: null,
-        step2: null,
-        step3: null,
-        step4: null,
+        helpNeeded: null,
+        availableDays: null,
+        availableTimeSlots: null,
+        hearAboutUs: null,
     });
 
     useEffect(() => {
-        if (!authState) return;
+        if (!authState) return
 
         if (!authState?.role) {
             router.push("/select-role");
+        } else if (!authState?.isAuthenticated) {
+            router.push("/signin");
         } else {
             setIsRedirecting(false);
         }
     }, [authState, router]);
 
+
+    useEffect(() => {
+        const storedUserId = localStorage.getItem("userId");
+        const storedJwtToken = localStorage.getItem("jwtToken");
+
+        if (storedUserId && storedJwtToken) {
+            dispatch(fetchUserProfile({ userId: storedUserId }));
+        }
+    }, [dispatch]);
+
     const handleNextStep = (data) => {
 
         setFormData((prevData) => ({
             ...prevData,
-            [`step${step}`]: data,
+            [`${step}`]: data,
         }));
 
-        if (parseInt(step) < 4) {
-            router.push(`/onboarding?step=${parseInt(step) + 1}`);
-        } else {
-            submitData({ ...formData, [`step${step}`]: data });
+        switch (step) {
+            case "helpNeeded":
+                router.push(`/onboarding?step=availableDays`);
+                break;
+            case "availableDays":
+                router.push(`/onboarding?step=availableTimeSlots`);
+                break;
+            case "availableTimeSlots":
+                router.push(`/onboarding?step=hearAboutUs`);
+                break;
+            case "hearAboutUs":
+                submitData({ ...formData, [step]: data });
+                break;
+            default:
+                router.push(`/onboarding?step=helpNeeded`);
+                break;
         }
     };
 
     const submitData = async (data) => {
         try {
             const payload = {
-                helpNeeded: data.step1,
-                availableDays: data.step2,
-                availableTimeSlots: data.step3,
-                hearAboutUs: data.step4,
+                helpNeeded: data.helpNeeded,
+                availableDays: data.availableDays,
+                availableTimeSlots: data.availableTimeSlots,
+                hearAboutUs: data.hearAboutUs,
                 userId: authState?.userId,
                 role: authState?.role,
             };
             const result = await dispatch(updateProfile(payload));
-            toast({
-                title: "Profile Updated",
-                description: result?.payload.message || "An unknown error occurred.",
-                status: "success",
-            });
-            router.push("/");
+            if (result.payload.statusCode === 200) {
+                toast({
+                    title: result?.payload.message,
+                    description: result?.payload.message || "An unknown error occurred.",
+                    status: "success",
+                });
+                router.push("/");
+            }
+
         } catch (error) {
             toast({
                 title: "An error occurred",
@@ -83,14 +108,14 @@ const Onboarding = () => {
 
     const renderStep = () => {
         switch (step) {
-            case "1":
-                return <StepOne onNext={handleNextStep} formData={formData} />;
-            case "2":
-                return <StepTwo onNext={handleNextStep} formData={formData} />;
-            case "3":
-                return <StepThree onNext={handleNextStep} formData={formData} />;
-            case "4":
-                return <StepFour onNext={handleNextStep} formData={formData} />;
+            case "helpNeeded":
+                return <StepOne onNext={handleNextStep} formData={formData.helpNeeded} />;
+            case "availableDays":
+                return <StepTwo onNext={handleNextStep} formData={formData.availableDays} />;
+            case "availableTimeSlots":
+                return <StepThree onNext={handleNextStep} formData={formData.availableTimeSlots} />;
+            case "hearAboutUs":
+                return <StepFour onNext={handleNextStep} formData={formData.hearAboutUs} />;
             default:
                 router.push("/onboarding?step=1");
                 return null;

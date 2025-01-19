@@ -26,10 +26,10 @@ import {
 } from "@/components/ui/drawer"
 import { useMediaQuery } from "@react-hook/media-query";
 
-const StepOne = ({ onNext, formData }) => { 
+const StepOne = ({ onNext, formData }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const [selectedOptions, setSelectedOptions] = useState(formData.step1 || []);
+    const [selectedOptions, setSelectedOptions] = useState(formData || []);
     const [open, setOpen] = useState(false)
     const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -255,6 +255,7 @@ const StepOne = ({ onNext, formData }) => {
                     </form>
                 </div>
             </div>
+            <div></div>
         </>
     );
 };
