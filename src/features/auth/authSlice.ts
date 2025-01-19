@@ -80,61 +80,19 @@ export const generateOtpMobile = createAsyncThunk(
       );
     }
   }
-); 
+);
 
 const isClient = typeof window !== "undefined";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    login: isClient && localStorage.getItem("token") ? true : false,
-    token: isClient ? localStorage.getItem("token") : null,
     status: "idle",
     error: null,
   },
-  reducers: {
-    logout(state) {
-      state.token = null;
-      state.login = false;
-      if (isClient) {
-        localStorage.removeItem("token");
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder
-      // Login user
-      .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.token = action.payload.token;
-        state.login = true;
-        if (isClient) {
-          localStorage.setItem("token", action.payload.token);
-        }
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-      .addCase(registerUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.token = action.payload.token;
-        state.login = true;
-        if (isClient) {
-          localStorage.setItem("token", action.payload.token);
-        }
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      });
+    builder;
   },
 });
 
-export const { logout } = authSlice.actions;
 export default authSlice.reducer;

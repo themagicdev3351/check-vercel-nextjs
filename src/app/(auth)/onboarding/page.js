@@ -1,11 +1,15 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import StepOne from "@/components/onBoarding/StepOne";
-import StepTwo from "@/components/onBoarding/StepTwo";
-import StepThree from "@/components/onBoarding/StepThree";
-import StepFour from "@/components/onBoarding/StepFour";
+import dynamic from "next/dynamic";
+
+const StepOne = dynamic(() => import('@/components/onBoarding/StepOne'), { ssr: false });
+const StepTwo = dynamic(() => import('@/components/onBoarding/StepTwo'), { ssr: false });
+const StepThree = dynamic(() => import('@/components/onBoarding/StepThree'), { ssr: false });
+const StepFour = dynamic(() => import('@/components/onBoarding/StepFour'), { ssr: false });
+
 import { useAuth } from "@/lib/authContext";
 import { useToast } from "@/hooks/use-toast";
 import { useDispatch } from "react-redux";
@@ -18,17 +22,17 @@ const Onboarding = () => {
     const { toast } = useToast();
     const dispatch = useDispatch();
     const [isRedirecting, setIsRedirecting] = useState(true);
-
+    const step = searchParams && searchParams.get("step") || "1"; 
+    
     const [formData, setFormData] = useState({
         step1: null,
         step2: null,
         step3: null,
         step4: null,
     });
-    const step = parseInt(searchParams.get("step") || "1", 10);
 
     useEffect(() => {
-        if (!authState) return
+        if (!authState) return;
 
         if (!authState?.role) {
             router.push("/select-role");
@@ -38,13 +42,14 @@ const Onboarding = () => {
     }, [authState, router]);
 
     const handleNextStep = (data) => {
+
         setFormData((prevData) => ({
             ...prevData,
             [`step${step}`]: data,
         }));
 
-        if (step < 4) {
-            router.push(`/onboarding?step=${step + 1}`);
+        if (parseInt(step) < 4) {
+            router.push(`/onboarding?step=${parseInt(step) + 1}`);
         } else {
             submitData({ ...formData, [`step${step}`]: data });
         }
@@ -64,7 +69,7 @@ const Onboarding = () => {
             toast({
                 title: "Profile Updated",
                 description: result?.payload.message || "An unknown error occurred.",
-                status: "error",
+                status: "success",
             });
             router.push("/");
         } catch (error) {
@@ -73,20 +78,18 @@ const Onboarding = () => {
                 description: error.message || "Please try again later.",
                 status: "error",
             });
-        } finally {
-            setLoading(false);
         }
     };
 
     const renderStep = () => {
         switch (step) {
-            case 1:
+            case "1":
                 return <StepOne onNext={handleNextStep} formData={formData} />;
-            case 2:
+            case "2":
                 return <StepTwo onNext={handleNextStep} formData={formData} />;
-            case 3:
+            case "3":
                 return <StepThree onNext={handleNextStep} formData={formData} />;
-            case 4:
+            case "4":
                 return <StepFour onNext={handleNextStep} formData={formData} />;
             default:
                 router.push("/onboarding?step=1");
@@ -102,7 +105,11 @@ const Onboarding = () => {
         );
     }
 
-    return <div>{renderStep()}</div>;
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            {renderStep()}
+        </Suspense>
+    );
 };
 
 export default Onboarding;

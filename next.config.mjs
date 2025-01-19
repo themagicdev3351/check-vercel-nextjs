@@ -9,7 +9,7 @@ const nextConfig = {
     },
     experimental: {
         appDir: true, // Enable the app directory if using Next.js 13+
-
+        missingSuspenseWithCSRBailout: false,
     },
     webpack: (config) => {
         // Customize Webpack if needed
