@@ -44,7 +44,7 @@ const SignUp = () => {
         if (!authState?.role) {
             router.push("/select-role");
         } else if (authState?.isAuthenticated) {
-            router.push("/onboarding?step=availableDays");
+            router.push("/onboarding?step=helpNeeded");
         } else {
             setIsRedirecting(false);
         }
@@ -77,7 +77,7 @@ const SignUp = () => {
                     title: result?.payload.message,
                     status: "success",
                 });
-                router.push("/onboarding?step=availableDays");
+                router.push("/onboarding?step=helpNeeded");
                 setToken(result?.payload.token)
                 setUserId(result?.payload.userId)
             } else {
