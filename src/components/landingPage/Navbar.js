@@ -29,7 +29,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
 
 export default function Navbar() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { authState, logout } = useAuth();
 
@@ -60,7 +59,7 @@ export default function Navbar() {
   }, [authState, router]);
 
   const handleLogout = () => {
-    logout() 
+    logout()
   };
 
   return (

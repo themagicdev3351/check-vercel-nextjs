@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MdDone } from "react-icons/md";
@@ -12,27 +12,51 @@ const SelectRole = () => {
     const { toast } = useToast();
     const router = useRouter();
     const { authState, setRole } = useAuth();
-    const [selectedType, setSelectedType] = useState(authState?.role || "");
+    const [selectedType, setSelectedType] = useState(null);
+    const [isRedirecting, setIsRedirecting] = useState(true);
+
+
+    useEffect(() => {
+        setSelectedType(authState?.role)
+    }, [authState])
+
+    useEffect(() => {
+        if (!authState) return
+
+        if (authState?.role) {
+            router.push("/signin");
+        } else {
+            setIsRedirecting(false);
+        }
+    }, [authState, router]);
 
     function onSubmit(e) {
         e.preventDefault();
 
         if (!selectedType) {
             toast({
-                title: "Error",
-                description: "Please select a role.",
+                title: "Please select a role.",
                 variant: "destructive"
             });
             return;
         }
 
-        setRole(selectedType.toLocaleUpperCase())
         router.push("/signin");
+        setRole(selectedType.toLocaleUpperCase())
         // toast({
         //     title: "Success",
         //     description: `You selected: ${selectedType}`,
         // });
     }
+
+    if (isRedirecting) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
 
     return (
         <>
@@ -42,7 +66,7 @@ const SelectRole = () => {
                         <h3 className="text-center mb-3 capitalize text-p1 md:text-h5 lg:text-h3 font-bold tracking-[0] relative w-fit mx-auto">
                             <img
                                 src="/images/icon/left-text.png"
-                                className={`absolute left-[-20px] bottom-[20px] w-[50px] h-[60px] mq:w-[calc((77.69/1440)*100vw)] mq:h-[calc((96.28/1440)*100vw)]`}
+                                className="absolute left-[-0px] lg:left-[-20px] top-[-20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
                             />
                             Discover the perfect tutor for your needs.
                         </h3>
@@ -121,7 +145,7 @@ const SelectRole = () => {
 
                         <div className="max-w-[600px] w-full text-primary-foreground mx-auto text-center">
                             <Button type="submit" variant="black" className="w-full">
-                                Continue
+                                Login
                             </Button>
                         </div>
                     </form>

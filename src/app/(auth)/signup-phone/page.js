@@ -119,27 +119,24 @@ const SignInPhone = () => {
                 role: role,
             };
 
-            const signupResult = await dispatch(registerUser(payloadSignup));
-            if (signupResult?.payload?.success) {
+            const result = await dispatch(registerUser(payloadSignup));
+            if (result?.payload?.success) {
                 setToken(result?.payload.token)
                 setUserId(result?.payload.userId)
                 toast({
-                    title: "SignUp Successfull!",
-                    description: verifyResponse?.payload?.message,
+                    title: result?.payload?.message,
                     status: "success",
                 });
                 router.push("/onboarding");
             } else {
                 toast({
-                    title: "SignUp Failed",
-                    description: verifyResponse?.payload,
+                    title: result?.payload,
                     status: "error",
                 });
             }
         } catch (error) {
             toast({
-                title: "An error occurred",
-                description: error.message || "Please try again later.",
+                title: error.message,
                 status: "error",
             });
         } finally {
@@ -164,7 +161,7 @@ const SignInPhone = () => {
                     <h3 className="text-center mb-3 capitalize text-p1 md:text-h5 lg:text-h3 font-bold tracking-[0] relative w-fit mx-auto">
                         <img
                             src="/images/icon/left-text.png"
-                            className={`absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]`}
+                            className="absolute left-[-20px] lg:left-[-20px] top-[-20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
                         />
                         sign up to Expertbuddy
                     </h3>

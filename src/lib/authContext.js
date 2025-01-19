@@ -1,4 +1,4 @@
-import { clearUser, fetchUserProfile } from '@/features/user/userSlice';
+import { clearStudent, fetchStudentProfile } from '@/features/student/studentSlice';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
             const isAuthenticated = token && token.trim() !== "" && token !== null;
             if (userId && token) {
-                dispatch(fetchUserProfile(userId));
+                dispatch(fetchStudentProfile(userId));
             }
             setAuthState((prevState) => ({
                 ...prevState,
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("token");
         // localStorage.removeItem("userId");
         localStorage.removeItem("role");
-        dispatch(clearUser());
+        dispatch(clearStudent());
         setAuthState({
             isAuthenticated: false,
             token: null,

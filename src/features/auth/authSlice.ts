@@ -27,13 +27,8 @@ export const loginUser = createAsyncThunk(
         payload
       );
 
-      if (response && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Unexpected response format");
-      }
+      return response.data;
     } catch (error) {
-      console.error("Login error:", error);
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
       );
@@ -53,7 +48,6 @@ export const registerUser = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.error("Register error:", error);
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
       );
@@ -68,13 +62,8 @@ export const generateOtpMobile = createAsyncThunk(
       const response = await axiosInstance.get(
         `/auth/generateOtp?mobileNumber=${data.mobile}&countryCode=${data.countryCode}&loginSignUp=${data.loginMethod}`
       );
-      if (response && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Unexpected response format");
-      }
+      return response.data;
     } catch (error) {
-      console.error("Register error:", error);
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
       );
@@ -82,7 +71,6 @@ export const generateOtpMobile = createAsyncThunk(
   }
 );
 
-const isClient = typeof window !== "undefined";
 const authSlice = createSlice({
   name: "auth",
   initialState: {

@@ -29,7 +29,7 @@ const generatePayload = (data) => ({
 });
 
 export const updateProfile = createAsyncThunk(
-  "user/updateProfile",
+  "student/updateProfile",
   async (data: any, { rejectWithValue }) => {
     try {
       const payload = generatePayload(data);
@@ -41,7 +41,6 @@ export const updateProfile = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.error("Login error:", error);
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
       );
@@ -49,22 +48,36 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
-export const fetchUserProfile = createAsyncThunk(
-  "user/fetchUserProfile",
-  async (userId: string, { rejectWithValue }) => {
+export const referralCode = createAsyncThunk(
+  "student/referralCode",
+  async (data: any, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(
-        `/profile/get/student?userId=${userId}`,
-        {
-          headers: {
-            accept: "*/*",
-          },
-        }
+      const payload = generatePayload(data);
+
+      const response = await axiosInstance.put(
+        `/profile/redeem/referral-code?userId=${data.userId}&referralCode=${data.referralCode}`,
+        payload
       );
 
       return response.data;
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      return rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
+    }
+  }
+);
+
+export const fetchStudentProfile = createAsyncThunk(
+  "student/fetchStudentProfile",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `/profile/get/student?userId=${userId}`
+      );
+
+      return response.data;
+    } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch user profile"
       );
@@ -72,33 +85,33 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
-const userSlice = createSlice({
-  name: "user",
+const studentSlice = createSlice({
+  name: "student",
   initialState: {
-    user: null,
+    student: null,
     status: "idle",
     error: null,
   },
   reducers: {
-    clearUser: (state) => {
-      state.user = null;
+    clearStudent: (state) => {
+      state.student = null;
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserProfile.pending, (state) => {
+      .addCase(fetchStudentProfile.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+      .addCase(fetchStudentProfile.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        state.student = action.payload;
       })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
+      .addCase(fetchStudentProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
   },
 });
-export const { clearUser } = userSlice.actions;
-export default userSlice.reducer;
+export const { clearStudent } = studentSlice.actions;
+export default studentSlice.reducer;

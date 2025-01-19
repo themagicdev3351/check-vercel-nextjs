@@ -70,23 +70,20 @@ const SignIn = () => {
             const result = await dispatch(loginUser(payload));
             if (result?.payload.success) {
                 toast({
-                    title: "Login Successful!",
-                    description: result?.payload.message,
+                    title: result?.payload.message,
                     status: "success",
                 });
                 setToken(result?.payload.token)
                 router.push("/");
             } else {
                 toast({
-                    title: "Login Failed",
-                    description: result?.payload.message || "An unknown error occurred.",
+                    title: result?.payload.message,
                     status: "error",
                 });
             }
         } catch (error) {
             toast({
-                title: "An error occurred",
-                description: error.message || "Please try again later.",
+                title: error.message,
                 status: "error",
             });
         } finally {
@@ -109,7 +106,7 @@ const SignIn = () => {
                     <h3 className="text-center mb-3 capitalize text-p1 md:text-h5 lg:text-h3 font-bold tracking-[0] relative w-fit mx-auto">
                         <img
                             src="/images/icon/left-text.png"
-                            className="absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
+                            className="absolute left-[-20px] lg:left-[-20px] top-[-20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
                         />
                         Get Started Now
                     </h3>

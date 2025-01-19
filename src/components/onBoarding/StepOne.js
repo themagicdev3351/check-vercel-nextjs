@@ -68,8 +68,7 @@ const StepOne = ({ onNext, formData }) => {
                     <h3 className="text-center mb-3 capitalize text-p1 md:text-h5 lg:text-h3 font-bold tracking-[0] relative w-fit mx-auto">
                         <img
                             src="/images/icon/left-text.png"
-                            className="absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
-                            alt="icon"
+                            className="absolute left-[-10px] lg:left-[-20px] top-[-20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
                         />
                         What Type of help do you need?
                     </h3>

@@ -44,7 +44,7 @@ const SignUp = () => {
         if (!authState?.role) {
             router.push("/select-role");
         } else if (authState?.isAuthenticated) {
-            router.push("/");
+            router.push("/onboarding?step=availableDays");
         } else {
             setIsRedirecting(false);
         }
@@ -75,23 +75,20 @@ const SignUp = () => {
             if (result?.payload.success) {
                 toast({
                     title: result?.payload.message,
-                    description: result?.payload.message,
                     status: "success",
                 });
+                router.push("/onboarding?step=availableDays");
                 setToken(result?.payload.token)
                 setUserId(result?.payload.userId)
-                router.push("/onboarding?step=availableDays");
             } else {
                 toast({
-                    title: "Register Failed",
-                    description: result?.payload.message || "An unknown error occurred.",
+                    title: result?.payload.message,
                     status: "error",
                 });
             }
         } catch (error) {
             toast({
-                title: "An error occurred",
-                description: error.message || "Please try again later.",
+                title: error.message,
                 status: "error",
             });
         } finally {
@@ -114,7 +111,7 @@ const SignUp = () => {
                     <h3 className="text-center mb-3 capitalize text-p1 md:text-h5 lg:text-h3 font-bold tracking-[0] relative w-fit mx-auto">
                         <img
                             src="/images/icon/left-text.png"
-                            className={`absolute left-[-20px] bottom-[20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]`}
+                            className="absolute left-[-20px] lg:left-[-20px] top-[-20px] w-[30px] h-[40px] lg:w-[50px] lg:h-[60px]"
                         />
                         sign up to Expertbuddy
                     </h3>

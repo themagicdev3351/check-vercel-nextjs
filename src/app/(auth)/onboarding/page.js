@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/authContext";
 import { useToast } from "@/hooks/use-toast";
 import { useDispatch } from "react-redux";
-import { updateProfile } from "@/features/user/userSlice";
+import { updateProfile } from "@/features/student/studentSlice";
 import StepOne from "@/components/onBoarding/StepOne";
 import StepTwo from "@/components/onBoarding/StepTwo";
 import StepThree from "@/components/onBoarding/StepThree";
@@ -91,16 +91,14 @@ const Onboarding = () => {
             if (result.payload.statusCode === 200) {
                 toast({
                     title: result?.payload.message,
-                    description: result?.payload.message || "An unknown error occurred.",
                     status: "success",
                 });
-                router.push("/");
+                router.push("/referral-cole");
             }
 
         } catch (error) {
             toast({
-                title: "An error occurred",
-                description: error.message || "Please try again later.",
+                title: error.message,
                 status: "error",
             });
         }
