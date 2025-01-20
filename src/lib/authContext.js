@@ -38,14 +38,14 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("userId");
+        // localStorage.removeItem("userId");
         localStorage.removeItem("role");
 
         dispatch(clearStudent());
         setAuthState({
             isAuthenticated: false,
             token: null,
-            userId: null,
+            // userId: null,
             role: null,
         });
 
