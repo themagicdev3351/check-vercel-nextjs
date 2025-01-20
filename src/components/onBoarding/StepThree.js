@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,8 @@ import { Switch } from "@/components/ui/switch";
 const StepThree = ({ onNext, formData }) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const [selectedOptions, setSelectedOptions] = useState(formData || []);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [anytime, setAnytime] = useState(false)
 
     const {
         control,
@@ -24,9 +25,28 @@ const StepThree = ({ onNext, formData }) => {
         },
     });
 
+
+    useEffect(() => {
+        if (formData) {
+            setSelectedOptions(formData)
+        }
+        if (formData?.includes("anytime")) {
+            setAnytime(true);
+        } else {
+            setAnytime(false);
+        }
+    }, [router, formData])
+
+
     const onSubmit = (data) => {
         setLoading(true);
-        onNext(selectedOptions);
+        let updatedOptions = [...selectedOptions];
+
+        if (anytime) {
+            updatedOptions.push("anytime");
+        }
+
+        onNext(updatedOptions);
 
         setLoading(false);
     };
@@ -99,7 +119,13 @@ const StepThree = ({ onNext, formData }) => {
                         <div className="w-full mx-auto pt-6 max-w-[600px] flex gap-5">
                             <div className="flex items-center gap-2 bg-background py-3 px-5 rounded-[100px]">
                                 <Label htmlFor="airplane-mode">Anytime</Label>
-                                <Switch id="airplane-mode" />
+                                <Switch
+                                    id="airplane-mode"
+                                    checked={anytime}
+                                    onCheckedChange={(checked) => {
+                                        setAnytime(checked);
+                                    }}
+                                />
                             </div>
 
                             <Button

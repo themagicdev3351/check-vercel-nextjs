@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 import { useAuth } from "@/lib/authContext";
 import { useToast } from "@/hooks/use-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "@/features/student/studentSlice";
 import StepOne from "@/components/onBoarding/StepOne";
 import StepTwo from "@/components/onBoarding/StepTwo";
@@ -21,13 +21,29 @@ const Onboarding = () => {
     const dispatch = useDispatch();
     const [isRedirecting, setIsRedirecting] = useState(true);
     const step = searchParams && searchParams.get("step") || "helpNeeded";
+    const { student } = useSelector((state) => state.student)
 
     const [formData, setFormData] = useState({
-        helpNeeded: null,
-        availableDays: null,
-        availableTimeSlots: null,
-        hearAboutUs: null,
+        helpNeeded: [],
+        availableDays: [],
+        availableTimeSlots: [],
+        hearAboutUs: [],
     });
+
+    useEffect(() => {
+        if (student) {
+            setIsRedirecting(true);
+
+            setFormData({
+                helpNeeded: student?.helpNeeded?.length > 0 ? student.helpNeeded : [],
+                availableDays: student?.availableDays?.length > 0 ? student.availableDays : [],
+                availableTimeSlots: student?.availableTimeSlots?.length > 0 ? student.availableTimeSlots : [],
+                hearAboutUs: student?.hearAboutUs?.length > 0 ? student.hearAboutUs : [],
+            });
+
+            setIsRedirecting(false);
+        }
+    }, [student, router]);
 
     useEffect(() => {
         if (!authState) return
@@ -40,7 +56,6 @@ const Onboarding = () => {
             setIsRedirecting(false);
         }
     }, [authState, router]);
-
 
     useEffect(() => {
         const storedUserId = localStorage.getItem("userId");

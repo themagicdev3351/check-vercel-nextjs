@@ -208,22 +208,22 @@ const SignUp = () => {
                         <p className="text-sm">Or sign in with</p>
                         <div className="flex justify-center gap-4 my-7">
                             <SocialLoginButton
+                                method="signup"
                                 providerName="google"
                                 logoSrc="/images/login/google.svg"
                                 altText="GOOGLE"
-                                role={localStorage.getItem("role")}
                             />
                             <SocialLoginButton
+                                method="signup"
                                 providerName="apple"
                                 logoSrc="/images/login/apple.svg"
                                 altText="APPLE"
-                                role={localStorage.getItem("role")}
                             />
                             <SocialLoginButton
+                                method="signup"
                                 providerName="facebook"
                                 logoSrc="/images/login/facebook.svg"
                                 altText="FACEBOOK"
-                                role={localStorage.getItem("role")}
                             />
                         </div>
                     </div>

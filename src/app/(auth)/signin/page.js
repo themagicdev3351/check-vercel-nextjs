@@ -39,7 +39,7 @@ const SignIn = () => {
         if (!authState?.role) {
             router.push("/select-role");
         } else if (authState?.isAuthenticated) {
-            router.push("/");
+            router.push("/onboarding?step=helpNeeded");
         } else {
             setIsRedirecting(false);
         }
@@ -74,7 +74,7 @@ const SignIn = () => {
                     status: "success",
                 });
                 setToken(result?.payload.token)
-                router.push("/");
+                router.push("/onboarding?step=helpNeeded");
             } else {
                 toast({
                     title: result?.payload.message,
@@ -193,22 +193,22 @@ const SignIn = () => {
                         <p className="text-sm">Or sign in with</p>
                         <div className="flex justify-center gap-4 my-7">
                             <SocialLoginButton
+                                method="signin"
                                 providerName="google"
                                 logoSrc="/images/login/google.svg"
                                 altText="GOOGLE"
-                                role={localStorage.getItem("role")}
                             />
                             <SocialLoginButton
+                                method="signin"
                                 providerName="apple"
                                 logoSrc="/images/login/apple.svg"
                                 altText="APPLE"
-                                role={localStorage.getItem("role")}
                             />
                             <SocialLoginButton
+                                method="signin"
                                 providerName="facebook"
                                 logoSrc="/images/login/facebook.svg"
                                 altText="FACEBOOK"
-                                role={localStorage.getItem("role")}
                             />
                         </div>
                     </div>

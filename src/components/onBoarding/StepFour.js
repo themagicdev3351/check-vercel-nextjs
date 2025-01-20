@@ -99,11 +99,6 @@ const StepFour = ({ onNext, formData }) => {
                         </div>
 
                         <div className="w-full mx-auto pt-6 max-w-[600px] flex gap-5">
-                            <div className="flex items-center gap-2 bg-background py-3 px-5 rounded-[100px]">
-                                <Label htmlFor="airplane-mode">Anytime</Label>
-                                <Switch id="airplane-mode" />
-                            </div>
-
                             <Button
                                 type="submit"
                                 variant="black"

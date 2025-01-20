@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import {
@@ -14,24 +13,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer"
-import { useMediaQuery } from "@react-hook/media-query";
 
 const StepOne = ({ onNext, formData }) => {
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
     const [selectedOptions, setSelectedOptions] = useState(formData || []);
     const [open, setOpen] = useState(false)
-    const isDesktop = useMediaQuery("(min-width: 768px)")
 
     const {
         control,
@@ -43,7 +29,7 @@ const StepOne = ({ onNext, formData }) => {
         },
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = () => {
         setLoading(true);
         onNext(selectedOptions);
 
@@ -118,127 +104,60 @@ const StepOne = ({ onNext, formData }) => {
                         </div>
 
                         <div className="mt-4 mb-10 text-center">
-                            {isDesktop ? (
-                                <Dialog open={open} onOpenChange={setOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button size="md" variant="link">View All</Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-[425px]">
-                                        <DialogHeader>
-                                            <DialogTitle>
-                                                <h6 className="text-h6">
-                                                    What Type of help do you need?
-                                                </h6>
-                                            </DialogTitle>
-                                            <DialogDescription>
-                                                {[
-                                                    "Complete Course",
-                                                    "Backing Coverage",
-                                                    "Score Improvement",
-                                                    "Exam Preparation",
-                                                    "Help with Homework",
-                                                    "Understanding Companion for School/Tuition",
-                                                    "Study Ahead of School",
-                                                    "Advanced Classes",
-                                                ]
-                                                    .map((option, index) => (
-                                                        <label
-                                                            key={index}
-                                                            htmlFor={`option-${index}`}
-                                                            className="flex items-center justify-between px-4 py-2 bg-background text-sm font-medium cursor-pointer space-x-3 space-y-0 rounded-md border p-4 shadow mb-3"
-                                                        >
-                                                            <span
-                                                                className="mr-2 cursor-pointer"
-                                                            >
-                                                                {option}
-                                                            </span>
-
-                                                            <Checkbox
-                                                                id={`option-${index}`}
-                                                                checked={selectedOptions.includes(option)}
-                                                                onCheckedChange={(checked) => {
-                                                                    handleCheckboxChange(checked, option);
-                                                                }}
-                                                            />
-                                                        </label>
-                                                    ))}
-
-                                                <Button
-                                                    onClick={() => setOpen(false)}
-                                                    variant="black"
-                                                    className="w-full text-primary-foreground"
-                                                    disabled={loading}
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogTrigger asChild>
+                                    <Button size="md" variant="link">View All</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            <h6 className="text-h6">
+                                                What Type of help do you need?
+                                            </h6>
+                                        </DialogTitle>
+                                    </DialogHeader>
+                                    {[
+                                        "Complete Course",
+                                        "Backing Coverage",
+                                        "Score Improvement",
+                                        "Exam Preparation",
+                                        "Help with Homework",
+                                        "Understanding Companion for School/Tuition",
+                                        "Study Ahead of School",
+                                        "Advanced Classes",
+                                    ]
+                                        .map((option, index) => (
+                                            <label
+                                                key={index}
+                                                htmlFor={`option-${index}`}
+                                                className="flex items-center justify-between px-4 py-2 bg-background text-sm font-medium cursor-pointer space-x-3 space-y-0 rounded-md border p-4 shadow mb-3"
+                                            >
+                                                <span
+                                                    className="mr-2 cursor-pointer"
                                                 >
-                                                    {loading ? "Next..." : "Next"}
-                                                </Button>
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                    </DialogContent>
-                                </Dialog>
-                            ) : (
-                                <Drawer open={open} onOpenChange={setOpen}>
-                                    <DrawerTrigger asChild>
-                                        <Button size="md" variant="link">View All</Button>
-                                    </DrawerTrigger>
-                                    <DrawerContent>
-                                        <DrawerHeader className="text-left">
-                                            <DrawerTitle>
-                                                <h6 className="text-h6">
-                                                    What Type of help do you need?
-                                                </h6>
-                                            </DrawerTitle>
-                                            <DrawerDescription>
-                                                {[
-                                                    "Complete Course",
-                                                    "Backing Coverage",
-                                                    "Score Improvement",
-                                                    "Exam Preparation",
-                                                    "Help with Homework",
-                                                    "Understanding Companion for School/Tuition",
-                                                    "Study Ahead of School",
-                                                    "Advanced Classes",
-                                                    "Advanced Classes"
-                                                ]
-                                                    .map((option, index) => (
-                                                        <label
-                                                            key={index}
-                                                            htmlFor={`option-${index}`}
-                                                            className="flex items-center justify-between px-4 py-2 bg-background text-sm font-medium cursor-pointer space-x-3 space-y-0 rounded-md border p-4 shadow mb-3"
-                                                        >
-                                                            <span
-                                                                className="mr-2 cursor-pointer"
-                                                            >
-                                                                {option}
-                                                            </span>
+                                                    {option}
+                                                </span>
 
-                                                            <Checkbox
-                                                                id={`option-${index}`}
-                                                                checked={selectedOptions.includes(option)}
-                                                                onCheckedChange={(checked) => {
-                                                                    handleCheckboxChange(checked, option);
-                                                                }}
-                                                            />
-                                                        </label>
-                                                    ))}
+                                                <Checkbox
+                                                    id={`option-${index}`}
+                                                    checked={selectedOptions.includes(option)}
+                                                    onCheckedChange={(checked) => {
+                                                        handleCheckboxChange(checked, option);
+                                                    }}
+                                                />
+                                            </label>
+                                        ))}
 
-                                                <Button
-                                                    onClick={() => setOpen(false)}
-                                                    variant="black"
-                                                    className="w-full text-primary-foreground"
-                                                    disabled={loading}
-                                                >
-                                                    {loading ? "Next..." : "Next"}
-                                                </Button>
-                                            </DrawerDescription>
-                                        </DrawerHeader>
-                                        <DrawerFooter className="pt-2">
-                                            <DrawerClose asChild>
-                                                <Button variant="outline">Cancel</Button>
-                                            </DrawerClose>
-                                        </DrawerFooter>
-                                    </DrawerContent>
-                                </Drawer>
-                            )}
+                                    <Button
+                                        onClick={handleSubmit(onSubmit)}
+                                        variant="black"
+                                        className="w-full text-primary-foreground"
+                                        disabled={loading}
+                                    >
+                                        {loading ? "Next..." : "Next"}
+                                    </Button>
+                                </DialogContent>
+                            </Dialog>
                         </div>
 
                         <div className="w-full mx-auto pt-6 max-w-[600px]">

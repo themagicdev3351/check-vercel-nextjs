@@ -57,15 +57,15 @@ const ReferralCole = () => {
             };
 
             const result = await dispatch(referralCode(payload));
-            if (result?.payload.success) {
+            if (!result?.payload?.message) {
                 toast({
-                    title: result?.payload,
+                    description: "Referred Successfully",
                     status: "success",
                 });
                 router.push("/");
             } else {
                 toast({
-                    title: result?.payload,
+                    description: result?.payload.message || "An unknown error occurred.",
                     status: "error",
                 });
             }

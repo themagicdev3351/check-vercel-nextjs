@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { loginUser } from "@/features/auth/authSlice";
+import { loginUser, registerUser } from "@/features/auth/authSlice";
 import { auth } from "@/lib/firebase";
 import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, OAuthProvider } from "firebase/auth";
 import Image from "next/image";
@@ -7,12 +7,14 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/authContext";
 
-const SocialLoginButton = ({ provider, logoSrc, altText, providerName, role }) => {
+const SocialLoginButton = ({ method, provider, logoSrc, altText, providerName }) => {
     const { toast } = useToast();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+    const { authState, setToken, setUserId } = useAuth();
 
     const handleLogin = async () => {
         setLoading(true);
@@ -38,7 +40,7 @@ const SocialLoginButton = ({ provider, logoSrc, altText, providerName, role }) =
 
             const payload = {
                 email: user.email,
-                role: role,
+                role: authState.role,
                 loginMethod: altText,
                 externalUid: user.uid || "string",
                 firstName: user.displayName || "string",
@@ -47,21 +49,39 @@ const SocialLoginButton = ({ provider, logoSrc, altText, providerName, role }) =
                 mobile: user.phoneNumber || "string",
             };
 
-            const result = await dispatch(loginUser(payload));
-            if (result?.payload.success) {
-                toast({
-                    title: "Login Successful!",
-                    description: result?.payload.message,
-                    status: "success",
-                });
-                router.push("/");
+            if (method === "signup") {
+                const result = await dispatch(registerUser(payload));
+                if (result?.payload.success) {
+                    toast({
+                        description: result?.payload.message,
+                        status: "success",
+                    });
+                    setToken(result?.payload.token)
+                    setUserId(result?.payload.userId)
+                    router.push("/onboarding?step=helpNeeded");
+                } else {
+                    toast({
+                        description: result?.payload.message || "An unknown error occurred.",
+                        status: "error",
+                    });
+                }
             } else {
-                toast({
-                    title: "Login Failed",
-                    description: result?.payload.message || "An unknown error occurred.",
-                    status: "error",
-                });
+                const result = await dispatch(loginUser(payload));
+                if (result?.payload.success) {
+                    toast({
+                        description: result?.payload.message,
+                        status: "success",
+                    });
+                    setToken(result?.payload.token)
+                    router.push("/onboarding?step=helpNeeded");
+                } else {
+                    toast({
+                        description: result?.payload.message || "An unknown error occurred.",
+                        status: "error",
+                    });
+                }
             }
+
         } catch (error) {
             console.error(`${providerName} login failed`, error.message);
         } finally {

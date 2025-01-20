@@ -52,11 +52,10 @@ export const referralCode = createAsyncThunk(
   "student/referralCode",
   async (data: any, { rejectWithValue }) => {
     try {
-      const payload = generatePayload(data);
+      // const payload = generatePayload(data);
 
       const response = await axiosInstance.put(
-        `/profile/redeem/referral-code?userId=${data.userId}&referralCode=${data.referralCode}`,
-        payload
+        `/profile/redeem/referral-code?userId=${data.userId}&referralCode=${data.referralCode}`
       );
 
       return response.data;

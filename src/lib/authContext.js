@@ -11,8 +11,9 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const router = useRouter();
-    const [authState, setAuthState] = useState(null);
     const dispatch = useDispatch();
+
+    const [authState, setAuthState] = useState(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -21,41 +22,36 @@ export const AuthProvider = ({ children }) => {
             const role = localStorage.getItem("role");
 
             const isAuthenticated = token && token.trim() !== "" && token !== null;
-            if (userId && token) {
+
+            if (userId && token && isAuthenticated) {
                 dispatch(fetchStudentProfile(userId));
             }
-            setAuthState((prevState) => ({
-                ...prevState,
+
+            setAuthState({
                 isAuthenticated: isAuthenticated,
                 token: token,
                 userId: userId,
                 role: role,
-            }));
+            });
         }
-    }, []);
-
-    // useEffect(() => {
-    //     if (authState.isAuthenticated) {
-    //         if (!authState.role) {
-    //             router.push("/select-role");
-    //         } else if (authState.isAuthenticated) {
-    //             router.push("/");
-    //         }
-    //     }
-    // }, [authState, router]);
+    }, [dispatch]);
 
     const logout = () => {
         localStorage.removeItem("token");
-        // localStorage.removeItem("userId");
+        localStorage.removeItem("userId");
         localStorage.removeItem("role");
+
         dispatch(clearStudent());
         setAuthState({
             isAuthenticated: false,
             token: null,
-            // userId: null,
+            userId: null,
             role: null,
         });
-        router.push("/signin");
+
+        if (typeof window !== "undefined") {
+            window.location.reload();
+        }
     };
 
     const setRole = (role) => {
